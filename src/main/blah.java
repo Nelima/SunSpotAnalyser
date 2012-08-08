@@ -37,10 +37,10 @@
 //            return false;
 //    }
 //
-//    public ArrayList<String> calculateSolarActivityScore() throws Exception {
+//    public ArrayList<String> generateListOfHighestSolarActivityScores() throws Exception {
 //        if (!areHeatValuesOutOfRange(listOfInputValues)) {
-//            Grid grid = new Grid(listOfInputValues);
-//            heatValues = grid.formatInputValuesIntoGrid();
+//            GridConstructor grid = new GridConstructor(listOfInputValues);
+//            heatValues = grid.constructTheGridWithRawHeatMeasurements();
 //            gridSize = grid.getGridSize();
 //            Calculator calculator = new Calculator(heatValues);
 //            noOfResults = grid.getNoOfResultsRequired();
@@ -49,7 +49,7 @@
 //            HashMap hashMap = new HashMap();
 //            for (int row = 1; row <= gridSize; row++) {
 //                for (int column = 1; column <= gridSize; column++) {
-//                    solarActivityScore[scoreArrayCounter] = calculator.calculateSolarActivityScore(row, column);
+//                    solarActivityScore[scoreArrayCounter] = calculator.generateListOfHighestSolarActivityScores(row, column);
 //                    String hashMapValue = String.format("(%d,%d)", column - 1, row - 1);
 //                    hashMap.put(solarActivityScore[scoreArrayCounter], new String(hashMapValue));
 //                    scoreArrayCounter++;
@@ -78,3 +78,14 @@
 //
 //
 //}
+
+//import org.junit.Test;
+//
+//@Test
+//    public void sholudCalculateTheHighestSolarActivityScore() throws Exception {
+//        Analyser analyser = new Analyser("1 3 4 2 3 2 2 1 3 2 1");
+//        ArrayList<String> expectedSolarActivityScores = analyser.generateListOfHighestSolarActivityScores();
+//        ArrayList<String> actualSolarActivityScores = new ArrayList();
+//        actualSolarActivityScores.add("(1,1) Score=20");
+//        assertTrue(expectedSolarActivityScores.equals(actualSolarActivityScores));
+//    }

@@ -1,6 +1,5 @@
 package main;
 
-import javax.swing.*;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -9,16 +8,22 @@ public class Analyser {
     private String inputValues;
     private int noOfResults;
     private int gridSize;
-    private int[][] heatValues;
+    private int[][] grid;
     private ArrayList<String> listOfOutputValues = new ArrayList();
+    private String[] arrayOfInputValues;
 
     public Analyser(String inputValues) {
 
         this.inputValues = inputValues;
     }
 
-    public boolean areHeatValuesOutOfRange(String listOfInputValues) throws Exception {
-        String[] arrayOfInputValues = listOfInputValues.split(" ");
+    public void splittingTheInputValues() {
+        arrayOfInputValues = inputValues.split(" ");
+        noOfResults = Integer.parseInt((arrayOfInputValues[0]));
+        gridSize = Integer.parseInt((arrayOfInputValues[1]));
+    }
+
+    public boolean areHeatValuesOutOfRange() throws Exception {
         int inputArrayCounter = 2;
         int counter = 0;
         while (inputArrayCounter < arrayOfInputValues.length) {
@@ -34,49 +39,51 @@ public class Analyser {
             return false;
     }
 
-    public boolean isResultsRequiredisValid(String listOfInputValues) throws Exception {
-        String[] arrayOfInputValues = listOfInputValues.split(" ");
+
+    public boolean isResultsRequiredValid() throws Exception {
         Pattern pattern = Pattern.compile("^[0-9]+$");
         Matcher resultsRequiredMatcher = pattern.matcher(arrayOfInputValues[0]);
-        Matcher gridSizeMatcher = pattern.matcher(arrayOfInputValues[1]);
-        int resultsRequired = Integer.parseInt(arrayOfInputValues[0]);
-        int gridSize = Integer.parseInt(arrayOfInputValues[1]);
-        if (resultsRequiredMatcher.find() && gridSizeMatcher.find() && (resultsRequired <= (gridSize * gridSize)))
+        splittingTheInputValues();
+        if (resultsRequiredMatcher.find() && (noOfResults <= (gridSize * gridSize)))
 
             return true;
         else
-            throw new Exception("Results required & gridsize should be +ve, results required should not be greater than no of cells in grid");
+            throw new Exception("Results required should be +ve and should not be greater than no of cells in grid");
     }
 
-    public ArrayList<String> calculateSolarActivityScore() throws Exception {
-        if (isResultsRequiredisValid(inputValues) && !areHeatValuesOutOfRange(inputValues)) {
-            Grid grid = new Grid(inputValues);
-            heatValues = grid.formatInputValuesIntoGrid();
-            gridSize = grid.getGridSize();
-            Calculator calculator = new Calculator(heatValues);
-            noOfResults = grid.getNoOfResultsRequired();
-            HashMap hashMap = new HashMap();
+
+    public boolean isGridSizeValid() throws Exception {
+        Pattern pattern = Pattern.compile("^[0-9]+$");
+        Matcher gridSizeMatcher = pattern.matcher(arrayOfInputValues[1]);
+        if (gridSizeMatcher.find()) return true;
+        else
+            throw new Exception("GridConstructor size should be positive");
+
+
+    }
+
+
+    public ArrayList<String> generateListOfHighestSolarActivityScores() throws Exception {
+        splittingTheInputValues();
+        if (isResultsRequiredValid() && isGridSizeValid() && !areHeatValuesOutOfRange()) {
+            GridConstructor gridConstructor = new GridConstructor(inputValues);
+            grid = gridConstructor.constructTheGridWithRawHeatMeasurements();
+            Calculator calculator = new Calculator(grid);
+            HashMap scoresAndLocationsOfAllCells = new HashMap();
             for (int row = 1; row <= gridSize; row++) {
                 for (int column = 1; column <= gridSize; column++) {
 
-                    String hashMapValue = String.format("(%d,%d) Score", column - 1, row - 1);
-                    hashMap.put(hashMapValue, new Integer(calculator.calculateSolarActivityScore(row, column)));
-
+                    String location = String.format("(%d,%d) Score", column - 1, row - 1);
+                    scoresAndLocationsOfAllCells.put(location, new Integer(calculator.calculateSolarActivityScore(row, column)));
                 }
             }
-            ArrayList sortedList = new ArrayList(hashMap.entrySet());
-            Collections.sort(sortedList, new Comparator() {
-                public int compare(Object o1, Object o2) {
-                    Map.Entry e1 = (Map.Entry) o1;
-                    Map.Entry e2 = (Map.Entry) o2;
-                    Integer first = (Integer) e1.getValue();
-                    Integer second = (Integer) e2.getValue();
-                    return first.compareTo(second);
-                }
-            });
-            int sortedListSize = sortedList.size();
+
+            MapSorter mapSorter = new MapSorter(scoresAndLocationsOfAllCells);
+            ArrayList sortedListOfSolarScores = mapSorter.sorting();
+
+            int sortedListSize = sortedListOfSolarScores.size();
             while (noOfResults > 0) {
-                listOfOutputValues.add(sortedList.get(sortedListSize - 1).toString());
+                listOfOutputValues.add(sortedListOfSolarScores.get(sortedListSize - 1).toString());
                 noOfResults--;
                 sortedListSize--;
             }
