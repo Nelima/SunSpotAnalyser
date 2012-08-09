@@ -5,34 +5,33 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Analyser {
-    private String inputValues;
+    private String analyserData;
     private int noOfResultsRequired;
     private int gridSize;
     private int[][] grid;
     private ArrayList<String> listOfOutputValues = new ArrayList();
-    private String[] arrayOfInputValues;
-    private ArrayList<Integer> rawDataOfHeatMeasurements = new ArrayList<Integer>();
+    private String[] formattedAnalyserData;
+    private ArrayList<Integer> heatMeasurements = new ArrayList<Integer>();
 
-    public Analyser(String inputValues) {
-
-        this.inputValues = inputValues;
+    public Analyser(String analyserData) {
+        this.analyserData = analyserData;
     }
 
-    public void splitTheInputValues() {
-        arrayOfInputValues = inputValues.split(" ");
-        noOfResultsRequired = Integer.parseInt((arrayOfInputValues[0]));
-        gridSize = Integer.parseInt((arrayOfInputValues[1]));
-        for (int inputArrayCounter = 2; inputArrayCounter < arrayOfInputValues.length; inputArrayCounter++) {
-            rawDataOfHeatMeasurements.add(Integer.parseInt(arrayOfInputValues[inputArrayCounter]));
+    public void generatingAnalyserData() {
+        formattedAnalyserData = analyserData.split(" ");
+        noOfResultsRequired = Integer.parseInt((formattedAnalyserData[0]));
+        gridSize = Integer.parseInt((formattedAnalyserData[1]));
+        for (int inputArrayCounter = 2; inputArrayCounter < formattedAnalyserData.length; inputArrayCounter++) {
+            heatMeasurements.add(Integer.parseInt(formattedAnalyserData[inputArrayCounter]));
         }
     }
 
     public boolean areHeatMeasurementsValid() throws Exception {
         int inputArrayCounter = 2;
         int counter = 0;
-        while (inputArrayCounter < arrayOfInputValues.length) {
+        while (inputArrayCounter < formattedAnalyserData.length) {
             Pattern pattern = Pattern.compile("^[0-5]$");
-            Matcher matcher = pattern.matcher(arrayOfInputValues[inputArrayCounter]);
+            Matcher matcher = pattern.matcher(formattedAnalyserData[inputArrayCounter]);
             if (matcher.find()) counter++;
             else throw new Exception("Heat values should be positive numbers and in the range of 1 to 5");
             inputArrayCounter++;
@@ -46,8 +45,8 @@ public class Analyser {
 
     public boolean isResultsRequiredValid() throws Exception {
         Pattern pattern = Pattern.compile("^[0-9]+$");
-        Matcher resultsRequiredMatcher = pattern.matcher(arrayOfInputValues[0]);
-        splitTheInputValues();
+        Matcher resultsRequiredMatcher = pattern.matcher(formattedAnalyserData[0]);
+        generatingAnalyserData();
         if (resultsRequiredMatcher.find() && (noOfResultsRequired <= (gridSize * gridSize)))
 
             return true;
@@ -58,19 +57,18 @@ public class Analyser {
 
     public boolean isGridSizeValid() throws Exception {
         Pattern pattern = Pattern.compile("^[0-9]+$");
-        Matcher gridSizeMatcher = pattern.matcher(arrayOfInputValues[1]);
-        if (gridSizeMatcher.find()) return true;
+        Matcher matcher = pattern.matcher(formattedAnalyserData[1]);
+        if (matcher.find()) return true;
         else
             throw new Exception("Grid size should be positive");
-
 
     }
 
 
     public ArrayList<String> generateListOfHighestSolarActivityScores() throws Exception {
-        splitTheInputValues();
+        generatingAnalyserData();
         if (isResultsRequiredValid() && isGridSizeValid() && !areHeatMeasurementsValid()) {
-            GridConstructor gridConstructor = new GridConstructor(gridSize, rawDataOfHeatMeasurements);
+            GridConstructor gridConstructor = new GridConstructor(gridSize, heatMeasurements);
             grid = gridConstructor.constructTheGridWithRawHeatMeasurements();
             Calculator calculator = new Calculator(grid);
             HashMap scoresAndLocationsOfAllCells = new HashMap();
@@ -84,7 +82,6 @@ public class Analyser {
 
             MapSorter mapSorter = new MapSorter(scoresAndLocationsOfAllCells);
             ArrayList sortedListOfSolarScores = mapSorter.sort();
-
             int sortedListSize = sortedListOfSolarScores.size();
             while (noOfResultsRequired > 0) {
                 listOfOutputValues.add(sortedListOfSolarScores.get(sortedListSize - 1).toString());

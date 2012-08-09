@@ -4,11 +4,11 @@ import java.util.ArrayList;
 
 public class GridConstructor {
     private int gridSize;
-    private ArrayList<Integer> rawDataOfHeatMeasurements;
+    private ArrayList<Integer> heatMeasurements;
 
-    public GridConstructor(int gridSize, ArrayList<Integer> rawDataOfHeatMeasurements) {
+    public GridConstructor(int gridSize, ArrayList<Integer> heatMeasurements) {
         this.gridSize = gridSize;
-        this.rawDataOfHeatMeasurements = rawDataOfHeatMeasurements;
+        this.heatMeasurements = heatMeasurements;
     }
 
 
@@ -18,7 +18,7 @@ public class GridConstructor {
         int grid[][] = new int[gridSize + 2][gridSize + 2];
         for (int row = 1; row <= gridSize; row++) {
             for (int column = 1; column <= gridSize; column++) {
-                grid[row][column] = rawDataOfHeatMeasurements.get(listOfHeatMeasurementsCounter);
+                grid[row][column] = heatMeasurements.get(listOfHeatMeasurementsCounter);
                 listOfHeatMeasurementsCounter++;
             }
 
