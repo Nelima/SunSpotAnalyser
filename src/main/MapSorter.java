@@ -10,7 +10,7 @@ public class MapSorter {
         this.stringIntegerHashMap = stringIntegerHashMap;
     }
 
-    public ArrayList sorting() {
+    public ArrayList sort() {
 
         ArrayList sortedListOfSolarScores = new ArrayList(stringIntegerHashMap.entrySet());
         Collections.sort(sortedListOfSolarScores, new Comparator() {

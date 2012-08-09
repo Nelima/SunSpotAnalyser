@@ -1,9 +1,9 @@
 package main;
 public class Calculator {
-    private int[][] heatValues;
+    private int[][] heatMeasurements;
 
-    public Calculator(int[][] heatValues) {
-        this.heatValues = heatValues;
+    public Calculator(int[][] heatMeasurements) {
+        this.heatMeasurements = heatMeasurements;
     }
 
     public int calculateSolarActivityScore(int rowValue, int columnValue) {
@@ -11,7 +11,7 @@ public class Calculator {
         int scoreOfEachCell = 0;
         for (int rowCounter = rowValue - 1; rowCounter < rowValue + 2; rowCounter++) {
             for (int columnCounter = columnValue - 1; columnCounter < columnValue + 2; columnCounter++) {
-                scoreOfEachCell = scoreOfEachCell + heatValues[rowCounter][columnCounter];
+                scoreOfEachCell = scoreOfEachCell + heatMeasurements[rowCounter][columnCounter];
             }
 
         }

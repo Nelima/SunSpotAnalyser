@@ -1,32 +1,30 @@
 package main;
 
+import java.util.ArrayList;
+
 public class GridConstructor {
-    private String listOfInputValues;
-    private int noOfResultsRequired;
     private int gridSize;
+    private ArrayList<Integer> rawDataOfHeatMeasurements;
 
-    public GridConstructor(String listOfInputValues) {
-
-        this.listOfInputValues = listOfInputValues;
+    public GridConstructor(int gridSize, ArrayList<Integer> rawDataOfHeatMeasurements) {
+        this.gridSize = gridSize;
+        this.rawDataOfHeatMeasurements = rawDataOfHeatMeasurements;
     }
 
 
     public int[][] constructTheGridWithRawHeatMeasurements() throws Exception {
 
-        String[] arrayOfInputValues = listOfInputValues.split(" ");
-        int inputArrayCounter = 0;
-        noOfResultsRequired = Integer.parseInt((arrayOfInputValues[0]));
-        gridSize = Integer.parseInt(arrayOfInputValues[1]);
-        int heatMeasurements[][] = new int[gridSize + 2][gridSize + 2];
+        int listOfHeatMeasurementsCounter = 0;
+        int grid[][] = new int[gridSize + 2][gridSize + 2];
         for (int row = 1; row <= gridSize; row++) {
             for (int column = 1; column <= gridSize; column++) {
-                heatMeasurements[row][column] = Integer.parseInt(arrayOfInputValues[inputArrayCounter + 2]);
-                inputArrayCounter++;
+                grid[row][column] = rawDataOfHeatMeasurements.get(listOfHeatMeasurementsCounter);
+                listOfHeatMeasurementsCounter++;
             }
 
         }
 
-        return heatMeasurements;
+        return grid;
 
     }
 

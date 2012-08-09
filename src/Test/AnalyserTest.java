@@ -40,16 +40,17 @@ public class AnalyserTest {
         try {
             analyser.generateListOfHighestSolarActivityScores();
         } catch (Exception e) {
-            assertThat(e.getMessage(), is("Heat values should be in the range of 1 to 5"));
+            assertThat(e.getMessage(), is("Heat values should be positive numbers and in the range of 1 to 5"));
         }
     }
+
     @Test
-    public void heatValuesShouldNotBeNegative() throws Exception {
+    public void heatValuesShouldBePositive() throws Exception {
         Analyser analyser = new Analyser("1 3 -4 6 3 2 2 1 3 2 1");
         try {
             analyser.generateListOfHighestSolarActivityScores();
         } catch (Exception e) {
-            assertThat(e.getMessage(), is("Heat values should be in the range of 1 to 5"));
+            assertThat(e.getMessage(), is("Heat values should be positive numbers and in the range of 1 to 5"));
         }
     }
     @Test
@@ -58,7 +59,7 @@ public class AnalyserTest {
         try {
             analyser.generateListOfHighestSolarActivityScores();
         } catch (Exception e) {
-            assertThat(e.getMessage(), is("GridConstructor size should be positive"));
+            assertThat(e.getMessage(), is("Grid size should be positive"));
         }
     }
 
